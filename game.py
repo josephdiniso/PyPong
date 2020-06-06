@@ -6,6 +6,9 @@ import math
 import pygame
 import winsound
 
+from socket_host import SocketHost
+from socket_client import SocketClient
+
 class game_env:
     def __init__(self):
         #Color initializations
@@ -48,10 +51,15 @@ class game_env:
         #Text Variables
         self.font = pygame.font.Font('freesansbold.ttf', 15) 
         
-
+        socket = SocketHost(self.left_y, (self.ball_x, self.ball_y))
         done = False
         self.ballInit()
         while not done:
+            self.pos_dict[1] = int(socket.pos_other)
+            socket.pos = self.pos_dict[0]
+            socket.ball = (self.ball_x, self.ball_y)
+            socket.send_msg()
+            socket.recv_msg()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True

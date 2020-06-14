@@ -2,11 +2,12 @@
 
 import random
 import math
+import pickle
 
 import pygame
 import winsound
+import threading
 
-from socket_host import SocketHost
 from socket_client import SocketClient
 
 class game_env:
@@ -51,15 +52,11 @@ class game_env:
         #Text Variables
         self.font = pygame.font.Font('freesansbold.ttf', 15) 
         
-        socket = SocketHost(self.left_y, (self.ball_x, self.ball_y))
+        self.socket = SocketClient(self.pos_dict[0], self.pos_dict[1])
+        threading.Thread(target=self.comm).start()
         done = False
         self.ballInit()
         while not done:
-            self.pos_dict[1] = int(socket.pos_other)
-            socket.pos = self.pos_dict[0]
-            socket.ball = (self.ball_x, self.ball_y)
-            socket.send_msg()
-            socket.recv_msg()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
@@ -86,10 +83,25 @@ class game_env:
             self.drawBlocks()
             self.drawBall()
             self.checkColl()
-            self.ballMove()
+            if self.socket.left:
+                self.ballMove()
             self.clock.tick(120)
             pygame.display.flip()
         pygame.quit()
+
+
+    def comm(self):
+        while 1:
+            if self.socket.left:
+                self.socket.pos_left = self.pos_dict[0]
+                self.pos_dict[1] = self.socket.pos_right
+                self.socket.ball_x = self.ball_x
+                self.socket.ball_y = self.ball_y
+            else:
+                self.socket.pos_right = self.pos_dict[1]
+                self.pos_dict[0] = self.socket.pos_left
+                self.ball_x = self.socket.ball_x
+                self.ball_y = self.socket.ball_y
 
     def checkMovement(self):
         if self.left_down:

@@ -27,6 +27,7 @@ class Socket():
         first = True
         while len(self.clients)<2:
             c, addr = self.s.accept()
+            print("CONNECTed")
             c.setblocking(1)
             if c not in self.clients:
                 self.clients.append(c)

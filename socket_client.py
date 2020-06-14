@@ -5,9 +5,9 @@ import threading
 import pickle
 
 class SocketClient():
-    def __init__(self, pos_left, pos_right):
+    def __init__(self, pos_left, pos_right, ip):
         self.s = socket.socket() 
-        self.s.connect(('192.168.1.5', 5555))
+        self.s.connect((ip, 5555))
         side = pickle.loads(self.s.recv(4096))
         if side == 'L':
             self.left = True

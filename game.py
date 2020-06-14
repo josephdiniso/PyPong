@@ -51,8 +51,8 @@ class game_env:
 
         #Text Variables
         self.font = pygame.font.Font('freesansbold.ttf', 15) 
-        
-        self.socket = SocketClient(self.pos_dict[0], self.pos_dict[1])
+        ip = raw_input('Enter server IP: ')
+        self.socket = SocketClient(self.pos_dict[0], self.pos_dict[1], ip)
         threading.Thread(target=self.comm).start()
         done = False
         self.ballInit()

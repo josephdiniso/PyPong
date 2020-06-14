@@ -16,6 +16,7 @@ class Socket():
         print("Server Ipv4: " + self.server_IP_address)
         self.port = 5555
         #self.server_IP_address = '34.231.214.96'
+        self.server_IP_address = "34.231.214.96"
         self.s.bind((self.server_IP_address, self.port))
         print("socket binded to %s" %(self.port))
         self.s.listen(100)

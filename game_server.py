@@ -9,8 +9,7 @@ import os
 class Socket():
     def __init__(self):
         self.clients = []
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   
-        self.s.settimeout(20)    
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         host_name = socket.gethostname()
         self.server_IP_address = socket.gethostbyname(host_name)

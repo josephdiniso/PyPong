@@ -40,8 +40,8 @@ class game_env:
         #Ball velocity variables
         self.ball_xv = 6
         self.ball_yv = 6
-        self.ball_x = self.size[0]/2
-        self.ball_y = self.size[1]/2
+        self.ball_x = int(self.size[0]/2)
+        self.ball_y = int(self.size[1]/2)
         self.abs_vel = 4
         self.ball_time = 0
         self.flip = 0
@@ -51,12 +51,14 @@ class game_env:
 
         #Text Variables
         self.font = pygame.font.Font('freesansbold.ttf', 15) 
-        ip = raw_input('Enter server IP: ')
+        ip = input('Enter server IP: ')
         self.socket = SocketClient(self.pos_dict[0], self.pos_dict[1], ip)
         threading.Thread(target=self.comm).start()
         done = False
         self.ballInit()
         while not done:
+            self.ball_x = int(self.ball_x)
+            self.ball_y = int(self.ball_y)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
@@ -93,15 +95,15 @@ class game_env:
     def comm(self):
         while 1:
             if self.socket.left:
-                self.socket.pos_left = self.pos_dict[0]
-                self.pos_dict[1] = self.socket.pos_right
-                self.socket.ball_x = self.ball_x
-                self.socket.ball_y = self.ball_y
+                self.socket.pos_left = int(self.pos_dict[0])
+                self.pos_dict[1] = int(self.socket.pos_right)
+                self.socket.ball_x = int(self.ball_x)
+                self.socket.ball_y = int(self.ball_y)
             else:
-                self.socket.pos_right = self.pos_dict[1]
-                self.pos_dict[0] = self.socket.pos_left
-                self.ball_x = self.socket.ball_x
-                self.ball_y = self.socket.ball_y
+                self.socket.pos_right = int(self.pos_dict[1])
+                self.pos_dict[0] = int(self.socket.pos_left)
+                self.ball_x = int(self.socket.ball_x)
+                self.ball_y = int(self.socket.ball_y)
 
     def checkMovement(self):
         if self.left_down:
@@ -128,6 +130,8 @@ class game_env:
     
    
     def drawBall(self):
+        self.ball_x = int(self.ball_x)
+        self.ball_y = int(self.ball_y)
         pygame.draw.circle(self.screen, self.BALL_COLOR, (self.ball_x, self.ball_y), 10)
     
    
@@ -204,7 +208,8 @@ class game_env:
             self.ball_xv *= -1
 
         #Resets y velocity at random from range [-2,0) U (0, 2]
-        numbers_y = range(-2,0) + range(1,3)
+        numbers_y = list(range(-2,0))
+        numbers_y.extend(list(range(1,3)))
         self.ball_yv = random.choice(numbers_y)
 
         self.side_score[side_to_point] += 1
